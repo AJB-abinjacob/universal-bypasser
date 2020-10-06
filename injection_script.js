@@ -1466,10 +1466,15 @@ ensureDomLoaded(()=>{
 		ifElement("form[id='1']",f=>f.submit())
 		bypassed=false
 	})
-	domainBypass(/(fcdot|fcc)\.lc|fc-lc\.com/,()=>ifElement("form#form",()=>{
-		window.setInterval=f=>setInterval(f,100)
-		ifElement(".btn-captcha",b=>setTimeout(()=>b.parentNode.submit(),3000),()=>awaitElement("a#surl[href]:not(.disabled)",a=>safelyNavigate(a.href)))
-	},()=>ifElement("form#submit_data",f=>f.submit())))
+	domainBypass("fc-lc.com",()=>ifElement("form",f=>{
+		crowdBypass()
+		document.querySelector(".btn").disabled = true
+		const data = new URLSearchParams(new FormData(f))
+		new Promise(resolve => setTimeout(resolve, 8000)).then(()=>fetch('https://fc.lc/links/go', {
+			method: 'post',
+			body: data,
+		}).then(r=>r.json()).then(json=>contributeAndNavigate(json.url)))
+	}))
 	domainBypass("dl.helow.id",()=>ifElement("button#btn6",b=>b.onclick()))
 	domainBypass("dl.ocanoke.com",()=>{
 		crowdPath(location.pathname.split("/").pop())
